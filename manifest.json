@@ -4,10 +4,6 @@
 	"version": "1",
 
 	"description": "display e10s compatibility on amo",
-	"icons": {
-		"48": "icon48.png",
-		"96": "icon96.png"
-	},
 	"applications": {
 		"gecko": {
 			"id": "amo-e10s@jetpack",
