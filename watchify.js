@@ -21,8 +21,14 @@ fetch(addonxpi)
 				mark(true);
 			} else if (zip.files['package.json']) {
 				// its sdk
+				zip.file('package.json').async('string').then( content => {
+					console.log('content:', content);
+				});
 			} else if (zip.files['install.rdf']) {
 				// its bootstrap or xul
+				zip.file('package.json').async('string').then( content => {
+					console.log('content:', content);
+				});
 			} else {
 				// error - unknown addon type
 				alert('error - uknown addon type');
