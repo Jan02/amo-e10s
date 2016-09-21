@@ -1,22 +1,22 @@
 {
 	"manifest_version": 2,
-	"name": "Glowing Bear Channel Watcher",
-	"version": "1.2",
+	"name": "amo e10s",
+	"version": "1",
 
-	"description": "Glowing Bear web client does not ring when new messages happen in same channel or other channel. This allows that.",
+	"description": "display e10s compatibility on amo",
 	"icons": {
 		"48": "icon48.png",
 		"96": "icon96.png"
 	},
 	"applications": {
 		"gecko": {
-			"id": "glowing-bear-channel-watcher@jetpack",
+			"id": "amo-e10s@jetpack",
 			"strict_min_version": "45.0"
 		}
 	},
 
 	"content_scripts": [{
-		"matches": ["http://www.glowing-bear.org/*"],
+		"matches": ["https://addons.mozilla.org/*/firefox/addon/*/*"],
 		"js": ["watchify.js"]
 	}]
 }
