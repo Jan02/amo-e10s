@@ -2,10 +2,17 @@ var addonid = document.querySelector('[data-addonid]').getAttribute('data-addoni
 var addonslug = window.location.href.match(/addon\/([^/]+)/)[1];
 var addonxpi = 'https://addons.mozilla.org/firefox/downloads/latest/' + addonslug + '/addon-' + addonid + '-latest.xpi';
 
+var href = document.querySelector('.installer');
+if (href) {
+	href = href.href;
+}
+
 // needed to add `"permissions": [ "https://addons.cdn.mozilla.net/*"]` in order for this to work
 // console.log('JSZip:', JSZip);
 
-fetch(addonxpi)
+markProgress('Downloading Addon Data');
+
+fetch(href || adonxpi)
 .then( response => {
 	response.arrayBuffer().then(buf => {
 		JSZip.loadAsync(buf).then(zip => {
@@ -63,8 +70,24 @@ fetch(addonxpi)
 })
 .catch( err => alert('amo-e10s Error: Failed to read XPI contents to detect e10s compatibility') );
 
+function markProgress(txt) {
+	var tag = document.getElementById('amoe10s_prog');
+	if (!tag) {
+		tag = document.createElement('span');
+		tag.setAttribute('id', 'amoe10s_prog');
+		tag.classList.add('requires-restart');
+		tag.setAttribute('style', 'background-color:#000;')
+		var parent = document.querySelector('h1.addon');
+		parent.appendChild(tag);
+	}
+	tag.textContent = 'amo e10s: ' + txt + '...';
+}
+
 function mark(compat) {
 	// compat - boolean/undefined - tells if its e10s compatible or not. undefined says author did not mark it so it MAY be compat
+	var progel = document.getElementById('amoe10s_prog');
+	if (progel) progel.parentNode.removeChild(progel);
+
 	var parent = document.querySelector('h1.addon');
 	var tag = document.createElement('span');
 	tag.classList.add('requires-restart');
