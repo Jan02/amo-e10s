@@ -18,5 +18,10 @@
 	"content_scripts": [{
 		"matches": ["https://addons.mozilla.org/*/firefox/addon/*/*"],
 		"js": ["watchify.js"]
-	}]
+	}],
+
+	"permissions": [
+		"https://addons.cdn.mozilla.net/*"
+	]
+
 }
