@@ -17,7 +17,7 @@
 
 	"content_scripts": [{
 		"matches": ["https://addons.mozilla.org/*/firefox/addon/*/*"],
-		"js": ["jszip.min.js", "watchify.js"]
+		"js": ["jszip.min.js", "e10testify.js"]
 	}],
 
 	"permissions": [

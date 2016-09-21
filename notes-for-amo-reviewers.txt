@@ -1,0 +1,2 @@
+3RD PARTY SOURCES
+jszip.min.js - https://github.com/Stuk/jszip/tree/887dcd8af9f321edc8b3e693da09502e5d3bc89d/dist

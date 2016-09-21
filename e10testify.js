@@ -1,37 +1,48 @@
 var addonid = document.querySelector('[data-addonid]').getAttribute('data-addonid');
 var addonslug = window.location.href.match(/addon\/([^/]+)/)[1];
 var addonxpi = 'https://addons.mozilla.org/firefox/downloads/latest/' + addonslug + '/addon-' + addonid + '-latest.xpi';
-alert(addonxpi);
 
 // needed to add `"permissions": [ "https://addons.cdn.mozilla.net/*"]` in order for this to work
-console.error('JSZip:', JSZip);
+// console.log('JSZip:', JSZip);
 
 fetch(addonxpi)
 .then( response => {
 	response.arrayBuffer().then(buf => {
-		console.log('buf:', buf);
-		alert('got buf now reading');
-
 		JSZip.loadAsync(buf).then(zip => {
-			alert('opened zip');
-			console.log('zip:', zip);
+			// console.log('zip:', zip);
 
-			if (zip.files['manifest.json']) {
+			var file;
+			if (file = zip.file('manifest.json')) {
 				// its webext
+				// console.log('webext');
 				mark(true);
-			} else if (zip.files['package.json']) {
+			} else if (file = zip.file('package.json')) {
 				// its sdk
-				zip.file('package.json').async('string').then( content => {
+				// console.log('sdk');
+				file.async('string').then( content => {
 					console.log('content:', content);
+					var json = JSON.parse(content);
+					console.log('json:', json);
+					if (json.permissions && json.permissions.multiprocess) {
+						mark(true);
+					} else {
+						mark(false);
+					}
 				});
-			} else if (zip.files['install.rdf']) {
+			} else if (file = zip.file('install.rdf')) {
 				// its bootstrap or xul
-				zip.file('package.json').async('string').then( content => {
+				// console.log('bootstrap or xul');
+				file.async('string').then( content => {
 					console.log('content:', content);
+					if (/^multiprocessCompatible.*?true$/m.test(content)) {
+						mark(true);
+					} else {
+						mark(false);
+					}
 				});
 			} else {
 				// error - unknown addon type
-				alert('error - uknown addon type');
+				alert('amo-e10s Error: Failed to identify type of addon');
 			}
 		});
 	});
