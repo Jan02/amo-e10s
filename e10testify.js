@@ -2,7 +2,7 @@ var addonid = document.querySelector('[data-addonid]').getAttribute('data-addoni
 var addonslug = window.location.href.match(/addon\/([^/]+)/)[1];
 var addonxpi = 'https://addons.mozilla.org/firefox/downloads/latest/' + addonslug + '/addon-' + addonid + '-latest.xpi';
 
-var href = document.querySelector('.installer');
+var href = document.querySelector('.prominent');
 if (href) {
 	href = href.href;
 }
@@ -12,7 +12,7 @@ if (href) {
 
 markProgress('Downloading Addon Data');
 
-fetch(href || adonxpi)
+fetch(href || addonxpi)
 .then( response => {
 	response.arrayBuffer().then(buf => {
 		JSZip.loadAsync(buf).then(zip => {
