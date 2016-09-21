@@ -24,9 +24,16 @@ fetch(addonxpi)
 					var json = JSON.parse(content);
 					console.log('json:', json);
 					if (json.permissions && json.permissions.multiprocess) {
+						// author marked it COMPAT
 						mark(true);
 					} else {
-						mark(false);
+						if (!json.permissions || !('multiprocess' in json.permissions)) {
+							// author did not mark it yet
+							mark(undefined);
+						} else {
+							// author marked it NOT COMPAT
+							mark(false);
+						}
 					}
 				});
 			} else if (file = zip.file('install.rdf')) {
@@ -34,10 +41,17 @@ fetch(addonxpi)
 				// console.log('bootstrap or xul');
 				file.async('string').then( content => {
 					console.log('content:', content);
-					if (/^multiprocessCompatible.*?true$/m.test(content)) {
-						mark(true);
+					if (/multiprocessCompatible/i.test(content)) {
+						if (/^multiprocessCompatible.*?true$/m.test(content)) {
+							// author marked it COMPAT
+							mark(true);
+						} else {
+							// author marked it NOT COMPAT
+							mark(true);
+						}
 					} else {
-						mark(false);
+						// author did not mark it yet
+						mark(undefined);
 					}
 				});
 			} else {
@@ -50,16 +64,19 @@ fetch(addonxpi)
 .catch( err => alert('amo-e10s Error: Failed to read XPI contents to detect e10s compatibility') );
 
 function mark(compat) {
-	// compat - boolean - tells if its e10s compatible or not
+	// compat - boolean/undefined - tells if its e10s compatible or not. undefined says author did not mark it so it MAY be compat
 	var parent = document.querySelector('h1.addon');
 	var tag = document.createElement('span');
 	tag.classList.add('requires-restart');
 	if (compat) {
 		tag.setAttribute('style', 'background-color:#2453b4;')
 		tag.textContent = 'E10s Compatible';
-	} else {
+	} else if (compat === false) {
 		tag.setAttribute('style', 'background-color:#b42424;')
 		tag.textContent = 'Not E10s Compatible';
+	} else {
+		tag.setAttribute('style', 'background-color:#cfc700;')
+		tag.textContent = 'Maybe E10s Compatible';
 	}
 	parent.appendChild(tag);
 }
